@@ -1,0 +1,66 @@
+syntax = "proto2";
+package zzy.car;
+
+message Perception {
+    enum LightType {
+        CAR_LIGHT = 0;
+        TRAFFIC_LIGHT = 1;
+    }
+    enum CarLightType {
+        TURN_LEFT = 0;
+        TURN_RIGHT = 1;
+        STOP = 2;
+        URGENT = 3;
+        NO_LIGHT = 4;
+    }
+    enum TrafficLightType {
+        RED_FORWARD = 0;
+        RED_LEFT = 1;
+        RED_RIGHT = 2;
+        YELLOW_FORWARD = 3;
+        YELLOW_LEFT = 4;
+        YELLOW_RIGHT = 5;
+        GREEN_FORWARD = 6;
+        GREEN_LEFT = 7;
+        GREEN_RIGHT = 8;
+        BLACK_FORWARD = 9;
+        BLACK_LEFT = 10;
+        BLACK_RIGHT = 11;
+        UNKNOWN_FORWARD = 12;
+        UNKNOWN_LEFT = 13;
+        UNKNOWN_RIGHT = 14;
+    }
+    optional LightType light_type = 1;
+    optional CarLightType car_light_type = 2;
+    optional TrafficLightType traffic_light_type = 3;
+    optional float distance = 4;
+    optional float object_speed = 5;
+}
+
+message Request {
+    required int64 vehicle_id = 1;
+    optional int32 timestamp = 2;
+    optional Perception perception = 3;
+}
+
+message Response {
+    enum Action {
+        NO_ACTION = 0;
+        SPEED_UP = 1;
+        SLOW_DOWN = 2;
+    }
+
+    message Command {
+        optional Action action = 1;
+        optional float target_speed = 2;
+        optional double acceleration = 3;
+    }
+
+    required Command command = 1;
+    optional uint32 timestamp = 2;
+    optional int64 vehicle_id = 3;
+}
+
+service CarService {
+    rpc action(Request) returns(Response);
+}
